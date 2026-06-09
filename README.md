@@ -1,0 +1,64 @@
+# cassette-db
+
+> Embedded key-value store with a cassette-tape inspired append-only log format. Zero dependencies, <1MB binary, ACID transactions.
+
+**Language:** Zig  
+**Constraint:** I mean, I GUESS you could store something that way  
+**Stack:** pure Zig (no dependencies)
+
+---
+
+## Features
+
+- Append-only log format with tape-track headers
+- ACID transactions via write-ahead log
+- Zero external dependencies
+- <1MB compiled binary
+- Human-debuggable format (xxd-friendly)
+- Crash recovery and log compaction
+- C ABI for FFI bindings
+
+---
+
+## Development Plan
+
+1. Phase 1: Tape format spec — header, data block, EOF markers
+2. Phase 2: Low-level file I/O and append-only writer
+3. Phase 3: Read engine — seek, get, range scan
+4. Phase 4: Transaction log and ACID semantics
+5. Phase 5: Crash recovery and consistency checks
+6. Phase 6: Log compaction (garbage collection)
+7. Phase 7: C ABI header for FFI
+
+---
+
+## Getting Started
+
+### Prerequisites
+
+- Zig toolchain
+
+### Build
+
+```bash
+# See PLAN.md for detailed build instructions per phase
+cd cassette-db
+```
+
+### Run
+
+```bash
+# See PLAN.md for run instructions
+```
+
+---
+
+## Architecture
+
+See `PLAN.md` for detailed architecture decisions and implementation notes.
+
+---
+
+## License
+
+MIT
