@@ -56,7 +56,7 @@ zig build test
 zig build run
 ```
 
-### Check / Recover
+### Check / Recover / Compact
 
 ```bash
 # Check consistency of a database file
@@ -67,6 +67,43 @@ zig build run -- recover -f mydb.ctdb
 
 # Compact the database (remove stale key versions)
 zig build run -- compact -f mydb.ctdb
+```
+
+### C FFI
+
+A static library with a C ABI is built automatically:
+
+```bash
+zig build
+# Produces zig-out/lib/libcassette.a and zig-out/include/cassette.h
+```
+
+Example usage from C:
+
+```c
+#include <cassette.h>
+#include <stdio.h>
+#include <string.h>
+
+int main(void) {
+    CassetteDB* db = cassette_open("example.ctdb");
+    if (!db) {
+        fprintf(stderr, "open failed: %s\n", cassette_last_error());
+        return 1;
+    }
+
+    cassette_put(db, "hello", 5, "world", 5);
+
+    char* value = NULL;
+    size_t value_len = 0;
+    if (cassette_get(db, "hello", 5, &value, &value_len) == 0) {
+        printf("got: %.*s\n", (int)value_len, value);
+        cassette_free_value(value);
+    }
+
+    cassette_close(db);
+    return 0;
+}
 ```
 
 ---

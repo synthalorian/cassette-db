@@ -143,12 +143,40 @@ Embedded key-value store with a cassette-tape inspired append-only log format. Z
 **Goal:** Phase 7: C ABI header for FFI
 
 **Deliverables:**
-- [ ] Core implementation
-- [ ] Tests
-- [ ] Documentation update
+- [x] Core implementation (`src/cassette_c.zig`, `include/cassette.h`)
+- [x] Tests (put/get roundtrip, missing key, scan range, check/compact)
+- [x] Documentation update
+
+**C ABI Surface:**
+
+```c
+CassetteDB* cassette_open(const char* path);
+void        cassette_close(CassetteDB* db);
+const char* cassette_last_error(void);
+
+int cassette_put(CassetteDB* db, const char* key, size_t key_len,
+                 const char* value, size_t value_len);
+int cassette_get(CassetteDB* db, const char* key, size_t key_len,
+                 char** value_out, size_t* value_len_out);
+void cassette_free_value(char* value);
+
+int cassette_scan(CassetteDB* db,
+                  const char* start, size_t start_len,
+                  const char* end, size_t end_len,
+                  cassette_scan_callback_t cb, void* user_data);
+
+int cassette_check(CassetteDB* db);
+int cassette_recover(CassetteDB* db);
+int cassette_compact(CassetteDB* db);
+```
 
 **Notes:**
-- 
+- Static library `libcassette.a` is produced by `zig build` and installed to
+  `zig-out/lib/` alongside the public header `zig-out/include/cassette.h`.
+- The C ABI uses `std.heap.c_allocator` so that returned buffers can be freed
+  with either `cassette_free_value()` or the host C runtime's `free()`.
+- Error messages are stored in a thread-local buffer; `cassette_last_error()`
+  returns a pointer valid until the next C ABI call on the same thread.
 
 ---
 
