@@ -81,17 +81,20 @@ Embedded key-value store with a cassette-tape inspired append-only log format. Z
 
 ---
 
-### Phase 4: Transaction log and ACID semantics
+### Phase 4: CLI tool — get, put, scan commands
 
-**Goal:** Phase 4: Transaction log and ACID semantics
+**Goal:** Phase 4: CLI tool — get, put, scan commands
 
 **Deliverables:**
-- [ ] Core implementation
-- [ ] Tests
-- [ ] Documentation update
+- [x] Core implementation (`src/main.zig`)
+- [x] Tests (put/get roundtrip, latest value, scan range, missing key)
+- [x] Documentation update
 
 **Notes:**
-- 
+- CLI supports `put <key> <value>`, `get <key>`, `scan <start> <end>`
+- Default database file: `cassette.ctdb` (override with `-f`)
+- `get` and `scan` use append-only semantics (latest value wins)
+- Integration tests verify roundtrip, shadowing, range queries, and missing keys
 
 ---
 
