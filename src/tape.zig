@@ -238,15 +238,17 @@ test "eof marker roundtrip" {
 test "writeTape produces valid header + block + eof" {
     const allocator = std.testing.allocator;
 
-    var list = std.ArrayList(u8).init(allocator);
-    defer list.deinit();
+    var list: std.ArrayList(u8) = .empty;
+    defer list.deinit(allocator);
 
-    try writeTape(allocator, list.writer(), "k", "v");
+    var aw = std.Io.Writer.Allocating.fromArrayList(allocator, &list);
+    try writeTape(allocator, &aw.writer, "k", "v");
+    list = aw.toArrayList();
     const bytes = list.items;
 
     // Header
     try std.testing.expectEqual(header_size, 5);
-    const header = Header.decode(bytes[0..header_size].*);
+    const header = Header.decode(bytes[0..header_size]);
     try std.testing.expect(header.isValid());
 
     // Data block

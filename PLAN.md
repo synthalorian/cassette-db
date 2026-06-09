@@ -66,12 +66,18 @@ Embedded key-value store with a cassette-tape inspired append-only log format. Z
 **Goal:** Phase 3: Read engine — seek, get, range scan
 
 **Deliverables:**
-- [ ] Core implementation
-- [ ] Tests
-- [ ] Documentation update
+- [x] Core implementation (`src/reader.zig`)
+- [x] Tests (open, seek, readNext, get, scanRange, edge cases)
+- [x] Documentation update
 
 **Notes:**
-- 
+- `TapeReader` opens existing tape files, verifies header, and provides:
+  - `seek(offset)` — random access within the file
+  - `readNext()` — sequential read of data blocks
+  - `get(key)` — linear scan returning the last (most recent) value for a key
+  - `scanRange(start, end, out)` — range scan returning latest values only, deduplicated
+- All read operations preserve the reader's position; internal scans save/restore `read_offset`.
+- `get` and `scanRange` implement append-only semantics: later writes shadow earlier ones for the same key. 
 
 ---
 

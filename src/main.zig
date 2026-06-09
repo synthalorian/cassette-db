@@ -1,6 +1,7 @@
 const std = @import("std");
 const tape = @import("tape.zig");
 const writer = @import("writer.zig");
+const reader = @import("reader.zig");
 
 pub fn main() !void {
     const allocator = std.heap.page_allocator;
@@ -72,6 +73,40 @@ pub fn main() !void {
     const eof_off = off3 + block3.encodedSize();
     if (data[eof_off] != @intFromEnum(tape.BlockType.eof)) {
         return error.SmokeTestFailed;
+    }
+
+    // Phase 3 smoke test: use TapeReader for seek, get, and range scan.
+    {
+        var r = try reader.TapeReader.open(allocator, io, path);
+        defer r.close();
+
+        // Test get: find "foo" -> "bar".
+        const got = try r.get("foo");
+        defer if (got) |b| b.deinit(allocator);
+        if (got == null or !std.mem.eql(u8, "bar", got.?.value)) {
+            return error.SmokeTestFailed;
+        }
+
+        // Test seek + readNext: seek to second block, read it.
+        try r.seek(tape.header_size + block1.encodedSize());
+        const next_block = try r.readNext();
+        defer if (next_block) |b| b.deinit(allocator);
+        if (next_block == null or !std.mem.eql(u8, "foo", next_block.?.key)) {
+            return error.SmokeTestFailed;
+        }
+
+        // Test range scan: ["foo", "hello") should yield only "foo".
+        var scan_results: std.ArrayList(tape.DataBlock) = .empty;
+        defer {
+            for (scan_results.items) |*b| {
+                b.deinit(allocator);
+            }
+            scan_results.deinit(allocator);
+        }
+        try r.scanRange("foo", "hello", &scan_results);
+        if (scan_results.items.len != 1 or !std.mem.eql(u8, "foo", scan_results.items[0].key)) {
+            return error.SmokeTestFailed;
+        }
     }
 
     try std.Io.Dir.cwd().deleteFile(io, path);
