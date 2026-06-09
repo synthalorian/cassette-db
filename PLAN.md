@@ -17,12 +17,33 @@ Embedded key-value store with a cassette-tape inspired append-only log format. Z
 **Goal:** Phase 1: Tape format spec — header, data block, EOF markers
 
 **Deliverables:**
-- [ ] Core implementation
-- [ ] Tests
-- [ ] Documentation update
+- [x] Core implementation (`src/tape.zig`)
+- [x] Tests (header roundtrip, corruption detection, EOF marker, full tape write)
+- [x] Documentation update
+
+**Format v1 Specification:**
+
+```
+[Header]     5 bytes
+  [0..4]     Magic: "CTDB"
+  [4]        Version: 0x01
+
+[Data Block] 11 + key_len + value_len bytes
+  [0]        Block type: 0x01
+  [1..3]     Key length: u16 big-endian
+  [3..7]     Value length: u32 big-endian
+  [7..k]     Key bytes
+  [k..v]     Value bytes
+  [v..v+4]   CRC32 (IEEE) of key || value, u32 big-endian
+
+[EOF Block]  1 byte
+  [0]        Block type: 0xFF
+```
 
 **Notes:**
-- 
+- Checksum covers only key + value concatenation, not the block header.
+- All multi-byte integers are big-endian for `xxd`-friendly inspection.
+- `src/tape.zig` provides self-contained CRC32 to avoid std.hash.crc API churn.
 
 ---
 

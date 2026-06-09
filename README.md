@@ -41,14 +41,19 @@
 ### Build
 
 ```bash
-# See PLAN.md for detailed build instructions per phase
-cd cassette-db
+zig build
+```
+
+### Run Tests
+
+```bash
+zig build test
 ```
 
 ### Run
 
 ```bash
-# See PLAN.md for run instructions
+zig build run
 ```
 
 ---
