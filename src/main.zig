@@ -4,6 +4,7 @@ const writer = @import("writer.zig");
 const reader = @import("reader.zig");
 const recovery = @import("recovery.zig");
 const compaction = @import("compaction.zig");
+const cassette_c = @import("cassette_c.zig");
 
 const usage =
     \\Usage: cassette-db <command> [options] [args...]
