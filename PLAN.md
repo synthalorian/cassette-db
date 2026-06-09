@@ -120,12 +120,21 @@ Embedded key-value store with a cassette-tape inspired append-only log format. Z
 **Goal:** Phase 6: Log compaction (garbage collection)
 
 **Deliverables:**
-- [ ] Core implementation
-- [ ] Tests
-- [ ] Documentation update
+- [x] Core implementation (`src/compaction.zig`)
+- [x] Tests (deduplication, order preservation, empty tape, single block, stats)
+- [x] Documentation update
+
+**Features:**
+- `compactTape()` — reads the source tape, keeps only the latest value for each unique key,
+  preserves the order of first appearance, writes a new temp file, and atomically renames it
+  over the original.
+- `CompactionReport` — reports bytes/blocks before and after, keys kept, and space saved.
+- CLI command: `compact` — rewrites the database in-place removing stale versions.
 
 **Notes:**
-- 
+- Compaction calls `recoverTape()` first to ensure the source file ends cleanly before reading.
+- The temp-file + rename approach makes compaction atomic: the original file is untouched until
+  the compacted version is fully written and synced.
 
 ---
 

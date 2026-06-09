@@ -64,6 +64,9 @@ zig build run -- check -f mydb.ctdb
 
 # Recover a damaged database file (truncates to last valid block)
 zig build run -- recover -f mydb.ctdb
+
+# Compact the database (remove stale key versions)
+zig build run -- compact -f mydb.ctdb
 ```
 
 ---
