@@ -103,12 +103,15 @@ Embedded key-value store with a cassette-tape inspired append-only log format. Z
 **Goal:** Phase 5: Crash recovery and consistency checks
 
 **Deliverables:**
-- [ ] Core implementation
-- [ ] Tests
-- [ ] Documentation update
+- [x] Core implementation (`src/recovery.zig`)
+- [x] Tests (healthy tape, truncated block, corrupt checksum, junk bytes, recovery, no-op)
+- [x] Documentation update
 
-**Notes:**
-- 
+**Features:**
+- `verifyTape()` — scans entire file, validates every block checksum, detects truncation, counts unexpected bytes
+- `recoverTape()` — truncates to last valid block, rewrites EOF marker, syncs to disk
+- `ConsistencyReport` — detailed statistics (valid/corrupt/truncated blocks, unexpected bytes, health status)
+- CLI commands: `check` (exits 1 if damaged) and `recover` (repairs in-place)
 
 ---
 
