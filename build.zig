@@ -16,6 +16,7 @@ pub fn build(b: *std.Build) void {
     const exe = b.addExecutable(.{
         .name = "cassette-db",
         .root_module = root_mod,
+        .version = .{ .major = 1, .minor = 0, .patch = 0 },
     });
 
     b.installArtifact(exe);
@@ -51,6 +52,7 @@ pub fn build(b: *std.Build) void {
         .name = "cassette",
         .root_module = c_abi_mod,
         .linkage = .static,
+        .version = .{ .major = 1, .minor = 0, .patch = 0 },
     });
     b.installArtifact(lib);
 

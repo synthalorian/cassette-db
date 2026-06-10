@@ -22,13 +22,15 @@
 
 ## Development Plan
 
-1. Phase 1: Tape format spec — header, data block, EOF markers
-2. Phase 2: Low-level file I/O and append-only writer
-3. Phase 3: Read engine — seek, get, range scan
-4. Phase 4: Transaction log and ACID semantics
-5. Phase 5: Crash recovery and consistency checks
-6. Phase 6: Log compaction (garbage collection)
-7. Phase 7: C ABI header for FFI
+All phases complete. See `PLAN.md` for detailed architecture decisions.
+
+- [x] Phase 1: Tape format spec — header, data block, EOF markers
+- [x] Phase 2: Low-level file I/O and append-only writer
+- [x] Phase 3: Read engine — seek, get, range scan
+- [x] Phase 4: CLI tool with get, put, scan commands
+- [x] Phase 5: Crash recovery and consistency checks
+- [x] Phase 6: Log compaction (garbage collection)
+- [x] Phase 7: C ABI header for FFI
 
 ---
 
