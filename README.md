@@ -1,3 +1,5 @@
+![cassette-db](.github/preview.png)
+
 # cassette-db
 
 > Embedded key-value store with a cassette-tape inspired append-only log format. Zero dependencies, <1MB binary, ACID transactions.
